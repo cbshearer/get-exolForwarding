@@ -41,15 +41,19 @@ foreach ($mailbox in $mailboxes)
                         {
                             $ruleReport = new-object PSCustomObject
                             Write-Host $mailbox.PrimarySmtpAddress $mailboxCounter
-                            $ruleReport | Add-Member -MemberType NoteProperty -name PrimarySmtpAddress      -Value $mailbox.PrimarySmtpAddress
-                            $ruleReport | Add-Member -MemberType NoteProperty -name RuleId                  -Value ""
-                            $ruleReport | Add-Member -MemberType NoteProperty -name RuleEnabled             -Value ""
-                            $ruleReport | Add-Member -MemberType NoteProperty -name RuleName                -Value ""
-                            $ruleReport | Add-Member -MemberType NoteProperty -name ForwardTo               -Value ""
-                            $ruleReport | Add-Member -MemberType NoteProperty -name RedirectTo              -Value ""
-                            $ruleReport | Add-Member -MemberType NoteProperty -name ForwardAsAttachmentTo   -Value ""
-                            $ruleReport | Add-Member -MemberType NoteProperty -name ForwardingSmtpAddress   -Value $mailbox.ForwardingSmtpAddress
-                            $ruleReport | Add-Member -MemberType NoteProperty -name ForwardingAddress       -Value $mailbox.ForwardingAddress
+                            $ruleReport | Add-Member -MemberType NoteProperty -name PrimarySmtpAddress          -Value $mailbox.PrimarySmtpAddress
+                            $ruleReport | Add-Member -MemberType NoteProperty -name DisplayName                 -Value $mailbox.DisplayName
+                            $ruleReport | Add-Member -MemberType NoteProperty -name RulePriority                -Value ""
+                            $ruleReport | Add-Member -MemberType NoteProperty -name RuleDescription             -Value ""
+                            $ruleReport | Add-Member -MemberType NoteProperty -name RuleId                      -Value ""
+                            $ruleReport | Add-Member -MemberType NoteProperty -name RuleEnabled                 -Value ""
+                            $ruleReport | Add-Member -MemberType NoteProperty -name RuleName                    -Value ""
+                            $ruleReport | Add-Member -MemberType NoteProperty -name ForwardTo                   -Value ""
+                            $ruleReport | Add-Member -MemberType NoteProperty -name RedirectTo                  -Value ""
+                            $ruleReport | Add-Member -MemberType NoteProperty -name ForwardAsAttachmentTo       -Value ""
+                            $ruleReport | Add-Member -MemberType NoteProperty -name DeliverToMailboxAndForward  -Value $mailbox.DeliverToMailboxAndForward
+                            $ruleReport | Add-Member -MemberType NoteProperty -name ForwardingSmtpAddress       -Value $mailbox.ForwardingSmtpAddress
+                            $ruleReport | Add-Member -MemberType NoteProperty -name ForwardingAddress           -Value $mailbox.ForwardingAddress
                         
                             $rulereport | Export-Csv -Path $reportOut -Append -NoTypeInformation
                         }
@@ -77,15 +81,19 @@ foreach ($mailbox in $mailboxes)
                                 {
                                     $ruleReport = new-object PSCustomObject
                                     Write-Host $mailbox.PrimarySmtpAddress $mailboxCounter
-                                    $ruleReport | Add-Member -MemberType NoteProperty -name PrimarySmtp -Value $mailbox.PrimarySmtpAddress
-                                    $ruleReport | Add-Member -MemberType NoteProperty -name RuleId      -Value $rule.identity
-                                    $ruleReport | Add-Member -MemberType NoteProperty -name RuleEnabled -Value $rule.enabled
-                                    $ruleReport | Add-Member -MemberType NoteProperty -name RuleName    -Value $rule.name
-                                    $ruleReport | Add-Member -MemberType NoteProperty -name ForwardTo   -Value $rule.ForwardTo
-                                    $ruleReport | Add-Member -MemberType NoteProperty -name RedirectTo  -Value $rule.RedirectTo
-                                    $ruleReport | Add-Member -MemberType NoteProperty -name ForwardAsAttachmentTo -Value $rule.ForwardAsAttachmentTo
-                                    $ruleReport | Add-Member -MemberType NoteProperty -name ForwardingSmtpAddress -Value ""
-                                    $ruleReport | Add-Member -MemberType NoteProperty -name ForwardingAddress     -Value ""
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name PrimarySmtpAddress          -Value $mailbox.PrimarySmtpAddress
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name DisplayName                 -Value $mailbox.DisplayName
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name RulePriority                -Value $rule.Priority
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name RuleDescription             -Value $rule.Description
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name RuleId                      -Value $rule.identity
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name RuleEnabled                 -Value $rule.enabled
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name RuleName                    -Value $rule.name
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name ForwardTo                   -Value $rule.ForwardTo
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name RedirectTo                  -Value $rule.RedirectTo
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name ForwardAsAttachmentTo       -Value $rule.ForwardAsAttachmentTo
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name DeliverToMailboxAndForward  -Value ""
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name ForwardingSmtpAddress       -Value ""
+                                    $ruleReport | Add-Member -MemberType NoteProperty -name ForwardingAddress           -Value ""
                                 
                                     $rulereport | Export-Csv -Path $reportOut -Append -NoTypeInformation
                                 }
@@ -97,6 +105,6 @@ foreach ($mailbox in $mailboxes)
     }
     
     $endTime = get-date
-    Write-Host "Results   : " $reportOut
+    Write-Host "`nResults   : " $reportOut
     Write-Host "Start Time: " $startTime
     Write-Host "End   Time: " $endTime
