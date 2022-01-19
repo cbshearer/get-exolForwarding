@@ -40,7 +40,7 @@ foreach ($mailbox in $mailboxes)
                     if ($domains.domainname -notcontains $domain)
                         {
                             $ruleReport = new-object PSCustomObject
-                            Write-Host $mailbox.PrimarySmtpAddress $mailboxCounter
+                            Write-Host $mailbox.PrimarySmtpAddress
                             $ruleReport | Add-Member -MemberType NoteProperty -name PrimarySmtpAddress          -Value $mailbox.PrimarySmtpAddress
                             $ruleReport | Add-Member -MemberType NoteProperty -name DisplayName                 -Value $mailbox.DisplayName
                             $ruleReport | Add-Member -MemberType NoteProperty -name RulePriority                -Value ""
@@ -80,7 +80,7 @@ foreach ($mailbox in $mailboxes)
                             if ($domains.domainname -notcontains $domain)
                                 {
                                     $ruleReport = new-object PSCustomObject
-                                    Write-Host $mailbox.PrimarySmtpAddress $mailboxCounter
+                                    Write-Host $mailbox.PrimarySmtpAddress
                                     $ruleReport | Add-Member -MemberType NoteProperty -name PrimarySmtpAddress          -Value $mailbox.PrimarySmtpAddress
                                     $ruleReport | Add-Member -MemberType NoteProperty -name DisplayName                 -Value $mailbox.DisplayName
                                     $ruleReport | Add-Member -MemberType NoteProperty -name RulePriority                -Value $rule.Priority
