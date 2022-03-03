@@ -1,5 +1,16 @@
-Import-Module msonline                 # for connect-msolservice
-Import-Module exchangeonlinemanagement # for connect-exchangeonline
+## Look for rules & settings forwarding outside your Exchange Online organization
+## Chris Shearer
+## https://github.com/cbshearer
+## January 2022
+
+## Check for necessary modules
+# for connect-msolservice
+    if (Get-Module -ListAvailable -name MSOnline) {Import-Module MSOnline}                  
+    else {Write-Host "MSOnline module not found. Please install and try again later. Hint: " -NoNewline; write-host -f Yellow "Install-Module -Name MSOnline -Scope AllUsers"}
+
+# for connect-msolservice
+    if (Get-Module -ListAvailable -name ExchangeOnlineManagement) {Import-Module ExchangeOnlineManagement}                  
+    else {Write-Host "ExchangeOnlineManagement module not found. Please install and try again later. Hint: " -NoNewline; write-host -f Yellow "Install-Module -Name ExchangeOnlineManagement -Scope AllUsers"}
 
 ## set TLS 1.2
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
@@ -7,20 +18,22 @@ Import-Module exchangeonlinemanagement # for connect-exchangeonline
 Connect-MsolService
 Connect-ExchangeOnline
 
+$domains   = Get-AcceptedDomain
 $startTime = get-date
 $mailboxes = get-mailbox -ResultSize unlimited
 $reportOut = "c:\temp\exolForwarding_$((get-date).ToString('yyyyMMdd_hhmmss')).csv"
-$mailboxCounter = 0
-$domains = Get-AcceptedDomain
+$mbCounter = 0
+
+## Create c:\temp if it doesnt exist
+if (!(test-path "C:\temp"))  {New-Item -ItemType Directory -Path "c:\temp" -Force}
 
 Write-Host "Mailboxes to evaluate  :" $mailboxes.count
 Write-Host "Report will be saved as:" $reportOut
 
 foreach ($mailbox in $mailboxes)
-
     {
-        $mailboxCounter = $mailboxCounter + 1
-        Write-Host $mailboxCounter -nonewline
+        $mbCounter = $mbCounter + 1
+        Write-Host $mbCounter -nonewline
         $rules = get-inboxrule -mailbox $mailbox.PrimarySmtpAddress
         $recipients = @()
         
@@ -33,7 +46,7 @@ foreach ($mailbox in $mailboxes)
                 ## evaluate each recipient to determine if it is external
                 foreach ($recipient in $recipients)
                 {
-                    $email = ($recipient -split "SMTP:")[1].Trim("]")
+                    $email  = ($recipient -split "SMTP:")[1].Trim("]")
                     $domain = ($email -split "@")[1]
 
                     ## if it is external then we gather information about it and insert it into the report (rules are added empty so we can see them all in one report)
@@ -100,11 +113,9 @@ foreach ($mailbox in $mailboxes)
                         }
                     }                
             }
-        
-
     }
     
     $endTime = get-date
-    Write-Host "`nResults   : " $reportOut
-    Write-Host "Start Time: " $startTime
-    Write-Host "End   Time: " $endTime
+    Write-Host "`nResult file : " $reportOut
+    Write-Host   "Start time  : " $startTime
+    Write-Host   "End time    : " $endTime
